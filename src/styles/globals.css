@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply overflow-x-hidden;
+  }
+  
+  /* Override specific border utilities only */
+  .border-2,
+  .border-4,
+  .border-8,
+  .border-t-2,
+  .border-b-2,
+  .border-l-2,
+  .border-r-2 {
+    border-width: 1px !important;
+  }
+  
+  /* Override HeroUI component borders only for bordered components */
+  .heroui-button[data-bordered="true"],
+  .heroui-input[data-bordered="true"],
+  .heroui-card[data-bordered="true"] {
+    border-width: 1px !important;
+  }
+  
+  /* Global background override */
+  body {
+    background: #F2E3E6;
+  }
+  
+  [data-theme="dark"] body {
+    background: #22171A;
+  }
+  
+  /* Dark mode text color overrides */
+  [data-theme="dark"] {
+    color: #faf4f6;
+  }
+  
+  [data-theme="dark"] h1,
+  [data-theme="dark"] h2,
+  [data-theme="dark"] h3,
+  [data-theme="dark"] h4,
+  [data-theme="dark"] h5,
+  [data-theme="dark"] h6,
+  [data-theme="dark"] p,
+  [data-theme="dark"] span,
+  [data-theme="dark"] div {
+    color: #faf4f6;
+  }
+  
+  /* Override HeroUI default text colors in dark mode */
+  [data-theme="dark"] .text-default-600,
+  [data-theme="dark"] .text-foreground,
+  [data-theme="dark"] [data-slot="label"],
+  [data-theme="dark"] [data-slot="description"] {
+    color: #faf4f6 !important;
+  }
+  
+  /* Ensure components inherit background */
+  .hero-navbar,
+  .hero-navbar-content,
+  .hero-card,
+  .hero-modal,
+  [data-slot="base"] {
+    @apply bg-transparent;
+  }
+  
+  /* Force navbar to use custom colors */
+  nav[data-navbar] {
+    background-color: #F2E3E6 !important;
+    border-bottom: 1.5px solid rgba(19, 13, 14, 0.15) !important;
+  }
+  
+  [data-theme="dark"] nav[data-navbar] {
+    background-color: #22171A !important;
+    border-bottom: 1.5px solid rgba(250, 244, 246, 0.15) !important;
+  }
+  
+  /* Colorful icon styles */
+  .colorful-icon {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .colorful-icon:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Browser Tab Styles */
+  .browser-tab {
+    position: relative;
+    margin: 0 2px;
+    padding: 0;
+    min-width: 120px;
+    background: transparent;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s ease;
+  }
+  
+  .browser-tab:first-child {
+    margin-left: 0;
+  }
+  
+  .browser-tab:last-child {
+    margin-right: 0;
+  }
+  
+  /* Light mode tab styles (default) */
+  .browser-tab:not(.browser-tab-active) {
+    background: #f2e3e6;
+    border: 1.5px solid #22171a;
+    border-bottom: none;
+  }
+  
+  .browser-tab:not(.browser-tab-active):hover {
+    background: #f2e3e6;
+    border-color: #22171a;
+  }
+
+  .browser-tab:not(.browser-tab-active) .tab-link {
+    color: #130d0e !important;
+  }
+  
+  .browser-tab-active {
+    background: #22171a;
+    border: 1.5px solid #22171a;
+    border-bottom: none;
+    z-index: 10;
+  }
+
+  .browser-tab-active .tab-link {
+    color: #faf4f6 !important;
+  }
+
+  /* Dark mode tab styles (override light mode) */
+  [data-theme="dark"] .browser-tab:not(.browser-tab-active),
+  .dark .browser-tab:not(.browser-tab-active) {
+    background: #22171a !important;
+    border: 1.5px solid #f2e3e6 !important;
+    border-bottom: none !important;
+  }
+  
+  [data-theme="dark"] .browser-tab:not(.browser-tab-active):hover,
+  .dark .browser-tab:not(.browser-tab-active):hover {
+    background: #22171a !important;
+    border-color: #f2e3e6 !important;
+  }
+
+  [data-theme="dark"] .browser-tab:not(.browser-tab-active) .tab-link,
+  .dark .browser-tab:not(.browser-tab-active) .tab-link {
+    color: #faf4f6 !important;
+  }
+  
+  [data-theme="dark"] .browser-tab-active,
+  .dark .browser-tab-active {
+    background: #f2e3e6 !important;
+    border: 1.5px solid #f2e3e6 !important;
+    border-bottom: none !important;
+  }
+
+  [data-theme="dark"] .browser-tab-active .tab-link,
+  .dark .browser-tab-active .tab-link {
+    color: #130d0e !important;
+  }
+}
