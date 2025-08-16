@@ -4,15 +4,11 @@ import { Avatar } from "@heroui/avatar";
 import { Chip } from "@heroui/chip";
 import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 import { title, subtitle } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
-import {
-  AnimatedChihuahuaLogo,
-  GitHubIcon,
-  LinkedInIcon,
-} from "@/components/icons";
+import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 
 const skills = [
   "React",
@@ -110,8 +106,103 @@ export default function AboutMePage() {
   const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
+  // Sticker logic: pin to corners, randomize only rotation
+  const stickerImages = [
+    "/sticker 1.png",
+    "/sticker 2.png",
+    "/sticker 3.png",
+    "/sticker 4.png",
+  ];
+  const STICKER_SIZE = 150; // px, 3x bigger
+  // Configure rotation ranges for each sticker: [min, max] degrees
+  const stickerRotationRanges = [
+    [-30, 10], // top left
+    [-10, 30], // top right
+    [-30, 10], // bottom left
+    [-10, 30], // bottom right
+  ];
+
+  // Each sticker: { top, left, rotate }
+  const [positions, setPositions] = useState([
+    { top: 64, left: 64, rotate: 0 }, // top left
+    { top: 64, left: 0, rotate: 0 }, // top right (left set in effect)
+    { top: 0, left: 64, rotate: 0 }, // bottom left (top set in effect)
+    { top: 0, left: 0, rotate: 0 }, // bottom right (top/left set in effect)
+  ]);
+
+  useEffect(() => {
+    function randomRotationForSticker(idx: number) {
+      const [min, max] = stickerRotationRanges[idx] || [-75, 75];
+
+      return Math.random() * (max - min) + min;
+    }
+    function randomOffset() {
+      return Math.random() * 10 - 5; // -5px to +5px
+    }
+    function getCornerPositions() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const size = STICKER_SIZE;
+      const margin = 64;
+
+      return [
+        {
+          top: margin + randomOffset(),
+          left: margin + randomOffset(),
+          rotate: randomRotationForSticker(0),
+        }, // top left
+        {
+          top: margin + randomOffset(),
+          left: vw - size - margin + randomOffset(),
+          rotate: randomRotationForSticker(1),
+        }, // top right
+        {
+          top: vh - size - margin + randomOffset(),
+          left: margin + randomOffset(),
+          rotate: randomRotationForSticker(2),
+        }, // bottom left
+        {
+          top: vh - size - margin + randomOffset(),
+          left: vw - size - margin + randomOffset(),
+          rotate: randomRotationForSticker(3),
+        }, // bottom right
+      ];
+    }
+    function updatePositions() {
+      setPositions(getCornerPositions());
+    }
+    updatePositions();
+    const interval = setInterval(updatePositions, 1200);
+
+    window.addEventListener("resize", updatePositions);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("resize", updatePositions);
+    };
+  }, []);
+
   return (
     <DefaultLayout>
+      {/* Teleporting Stickers */}
+      {stickerImages.map((src, i) => (
+        <img
+          key={src}
+          alt={`Sticker ${i + 1}`}
+          src={src}
+          style={{
+            position: "fixed",
+            zIndex: 100,
+            width: `${STICKER_SIZE}px`,
+            height: `${STICKER_SIZE}px`,
+            objectFit: "contain",
+            pointerEvents: "none",
+            top: positions[i]?.top ?? 0,
+            left: positions[i]?.left ?? 0,
+            transform: `rotate(${positions[i]?.rotate ?? 0}deg)`,
+          }}
+        />
+      ))}
       <motion.div
         ref={containerRef}
         animate="visible"
@@ -125,19 +216,6 @@ export default function AboutMePage() {
           style={{ y, opacity }}
           variants={itemVariants}
         >
-          <div className="flex justify-center mb-8">
-            <motion.div
-              animate={{ scale: 1, rotate: 0 }}
-              initial={{ scale: 0, rotate: -180 }}
-              transition={{
-                duration: 1,
-                ease: "easeOut",
-                delay: 0.2,
-              }}
-            >
-              <AnimatedChihuahuaLogo size={120} />
-            </motion.div>
-          </div>
           <h1 className={title({ size: "lg" })}>
             Hi, I&apos;m{" "}
             <motion.span
@@ -171,7 +249,7 @@ export default function AboutMePage() {
             viewport={{ once: true, amount: 0.3 }}
             whileInView="visible"
           >
-            <Card className="h-full">
+            <Card className="h-full shadow">
               <CardHeader className="pb-4">
                 <h2 className={title({ size: "sm" })}>About Me</h2>
               </CardHeader>
@@ -220,7 +298,7 @@ export default function AboutMePage() {
             viewport={{ once: true, amount: 0.3 }}
             whileInView="visible"
           >
-            <Card className="h-full">
+            <Card className="h-full shadow">
               <CardBody className="text-center space-y-6">
                 <motion.div
                   animate={{ scale: 1 }}
@@ -281,7 +359,7 @@ export default function AboutMePage() {
           viewport={{ once: true, amount: 0.3 }}
           whileInView="visible"
         >
-          <Card>
+          <Card className="shadow">
             <CardHeader>
               <h2 className={title({ size: "sm" })}>Skills & Technologies</h2>
             </CardHeader>
@@ -338,7 +416,7 @@ export default function AboutMePage() {
           viewport={{ once: true, amount: 0.5 }}
           whileInView="visible"
         >
-          <Card className="bg-gradient-to-r from-primary-100 to-secondary-100 dark:from-primary-900/20 dark:to-secondary-900/20">
+          <Card className="bg-gradient-to-r from-primary-100 to-secondary-100 dark:from-primary-900/20 dark:to-secondary-900/20 shadow">
             <CardBody className="py-12">
               <h2 className={title({ size: "sm", class: "mb-4" })}>
                 Let&lsquo;s Work Together!
